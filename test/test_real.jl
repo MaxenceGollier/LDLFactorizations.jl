@@ -41,6 +41,11 @@
     @test size(LDLT) == size(A)
     @test typeof(LDLT.D) <: Diagonal
     @test propertynames(LDLT) == (:L, :D, :P)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(LDLT)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(LDLT)[1]
   end
 
   @testset "not_factorizable" begin
@@ -92,6 +97,11 @@
       @test norm(x2 - z) ≤ sqrt(eps(Tf)) * norm(z)
       r2 = A * x2 - b
       @test norm(r2) ≤ sqrt(eps(Tf)) * norm(b)
+
+      # Test inertia
+      n_pos, n_zero, n_neg = inertia(LDLT)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(LDLT)[1]
     end
   end
 
@@ -166,6 +176,11 @@
     Y = similar(B)
     ldiv!(Y, LDLT, B)
     @test norm(Y - X) ≤ ϵ * norm(X)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(LDLT)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(LDLT)[1]
   end
 
   @testset "not_factorizable_upper" begin
@@ -198,6 +213,11 @@
       @test norm(r2) ≤ sqrt(eps(Tf)) * norm(b)
 
       @test nnz(LDLT) == nnz(LDLT.L) + length(LDLT.d)
+
+      # Test inertia
+      n_pos, n_zero, n_neg = inertia(LDLT)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(LDLT)[1]
     end
   end
 
@@ -227,6 +247,11 @@
     x = ldiv!(S, x)
     r = M * x - b
     @test norm(r) ≤ sqrt(eps()) * norm(b)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(S)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(S)[1]
   end
 
   @testset "SQD" begin
@@ -259,6 +284,11 @@
     x = ldiv!(S, x)
     r = M * x - b
     @test norm(r) ≤ sqrt(eps()) * norm(b)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(S)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(S)[1]
   end
 
   @testset "SQD_semi_dynamic" begin
@@ -291,6 +321,11 @@
     x = ldiv!(S, x)
     r = M * x - b
     @test norm(r) ≤ sqrt(eps()) * norm(b)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(S)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(S)[1]
   end
 
   @testset "Test booleans and allocations" begin
@@ -321,6 +356,8 @@
     @test_throws LDLFactorizations.SQDException lmul!(S, b)
     B = ones(20, 2)
     @test_throws LDLFactorizations.SQDException ldiv!(S, B)
+    _allocs3 = @allocated inertia(S)
+    @test _allocs3 == 0
   end
 
   @testset "ldl_mul!" begin

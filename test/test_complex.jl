@@ -54,6 +54,11 @@
     @test size(LDLT) == size(A)
     @test typeof(LDLT.D) <: Diagonal
     @test propertynames(LDLT) == (:L, :D, :P)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(LDLT)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(LDLT)[1]
   end
 
   @testset "factorizable_upper" begin
@@ -139,5 +144,10 @@
     Y = similar(B)
     ldiv!(Y, LDLT, B)
     @test norm(Y - X) ≤ ϵ * norm(X)
+
+    # Test inertia
+    n_pos, n_zero, n_neg = inertia(LDLT)
+    @test n_zero == 0
+    @test n_pos + n_neg == size(LDLT)[1]
   end
 end
