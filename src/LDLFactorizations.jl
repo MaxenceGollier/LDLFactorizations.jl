@@ -919,6 +919,7 @@ Returns the inertia of the `LDLFactorization`, extending `LinearAlgebra.inertia`
 That is, the number of positive, zero and negative elements on the diagonal `D`.
 """
 function LinearAlgebra.inertia(LDL::LDLFactorization)
+    factorized(LDL) || throw(SQDException(error_string)) 
     n = LDL.n
     (npos, nzero, nneg) = (0, 0, 0)
     D = LDL.d
