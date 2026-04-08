@@ -530,6 +530,7 @@ function ldl end
 
 """
     x = ldl_refine!(LDL, x, b; max_iter = 50, tol = sqrt(eps(T)))
+
 Given an LDLᵀ factorization, and an approximate solution LDLᵀx ≈ b, perform iterative refinement to improve the solution.
 The factorization should have been computed before calling this function (see example below).
 !!! warning 
@@ -541,7 +542,7 @@ The factorization should have been computed before calling this function (see ex
 - `b::V`: the right hand side of the linear system.
 
 # Keyword Arguments
-- `max_iter::Int = 50`: maximum number of iterations to perform;
+- `max_iter::Int = 3`: maximum number of iterations to perform;
 - `tol::T = sqrt(eps(T))`: tolerance for convergence. The algorithm stops when `norm(dx) < tol*norm(x)` where `dx` is the correction computed at each iteration.
 
 # Example
@@ -618,7 +619,7 @@ for (wrapper) in (:Symmetric, :Hermitian)
         zero(Tf),
         zero(Tf),
         n,
-        dx
+        dx,
       )
     end
 
@@ -756,7 +757,7 @@ function ldl_analyze(
     zero(Tf),
     zero(Tf),
     n,
-    dx
+    dx,
   )
 end
 
@@ -811,11 +812,11 @@ ldl(A::Matrix{T}, ::Type{Tf}; kwargs...) where {T <: Number, Tf <: Number} =
 ldl(A::Matrix{T}; kwargs...) where {T <: Number} = ldl(sparse(A), T; kwargs...)
 
 function ldl_refine!(
-  LDL::LDLFactorization{Tf, Ti, Tn, Tp}, 
+  LDL::LDLFactorization{Tf, Ti, Tn, Tp},
   x::AbstractVecOrMat{Tf},
-  b::AbstractVecOrMat{Tf}; 
-  max_iter::Int = 50, 
-  tol = sqrt(eps(real(Tf)))
+  b::AbstractVecOrMat{Tf};
+  max_iter::Int = 3,
+  tol = sqrt(eps(real(Tf))),
 ) where {Tf <: Number, Ti <: Integer, Tn <: Integer, Tp <: Integer}
 
   # Setup workspace
@@ -839,7 +840,7 @@ function ldl_refine!(
 
       # Update status
       k = k + 1
-      @views solved = norm(dx) < tol*norm(x[:, col])
+      @views solved = norm(dx) < tol * norm(x[:, col])
     end
     k = 0
   end
