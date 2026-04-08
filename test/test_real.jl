@@ -356,8 +356,7 @@
     @test_throws LDLFactorizations.SQDException lmul!(S, b)
     B = ones(20, 2)
     @test_throws LDLFactorizations.SQDException ldiv!(S, B)
-    _allocs3 = @allocated inertia(S)
-    @test _allocs3 == 0
+    @test_throws LDLFactorizations.SQDException inertia(S)
   end
 
   @testset "ldl_mul!" begin

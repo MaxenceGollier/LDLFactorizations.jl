@@ -913,26 +913,26 @@ function (-)(
 end
 
 """
-    inertia!(LDL)
+    LinearAlgebra.inertia(LDL)
 
-Returns an inertia estimate of the `LDLFactorization`. 
-That is, the number of positive, zero and negative elements on the diagonal D.
+Returns the inertia of the `LDLFactorization`, extending `LinearAlgebra.inertia`.
+That is, the number of positive, zero and negative elements on the diagonal `D`.
 """
 function LinearAlgebra.inertia(LDL::LDLFactorization)
-    (m, n) = size(LDL)
-    (pos, zero, neg) = (0, 0, 0)
+    n = LDL.n
+    (npos, nzero, nneg) = (0, 0, 0)
     D = LDL.d
     for i=1:n
         d = D[i]
         if real(d) > 0
-            pos += 1
+            npos += 1
         elseif real(d) == 0
-            zero += 1
+            nzero += 1
         else
-            neg += 1
+            nneg += 1
         end
     end
-    return pos, zero, neg
+    return npos, nzero, nneg
 end
 
 end  # module
