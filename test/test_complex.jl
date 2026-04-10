@@ -56,9 +56,11 @@
     @test propertynames(LDLT) == (:L, :D, :P)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(LDLT)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(LDLT)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(LDLT)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(LDLT)[1]
+    end
   end
 
   @testset "factorizable_upper" begin
@@ -146,8 +148,10 @@
     @test norm(Y - X) ≤ ϵ * norm(X)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(LDLT)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(LDLT)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(LDLT)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(LDLT)[1]
+    end
   end
 end

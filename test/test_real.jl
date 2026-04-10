@@ -43,9 +43,11 @@
     @test propertynames(LDLT) == (:L, :D, :P)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(LDLT)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(LDLT)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(LDLT)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(LDLT)[1]
+    end
   end
 
   @testset "not_factorizable" begin
@@ -99,9 +101,11 @@
       @test norm(r2) ≤ sqrt(eps(Tf)) * norm(b)
 
       # Test inertia
-      n_pos, n_zero, n_neg = inertia(LDLT)
-      @test n_zero == 0
-      @test n_pos + n_neg == size(LDLT)[1]
+      if VERSION >= v"1.11"
+        n_pos, n_zero, n_neg = inertia(LDLT)
+        @test n_zero == 0
+        @test n_pos + n_neg == size(LDLT)[1]
+      end
     end
   end
 
@@ -178,9 +182,11 @@
     @test norm(Y - X) ≤ ϵ * norm(X)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(LDLT)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(LDLT)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(LDLT)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(LDLT)[1]
+    end
   end
 
   @testset "not_factorizable_upper" begin
@@ -215,9 +221,11 @@
       @test nnz(LDLT) == nnz(LDLT.L) + length(LDLT.d)
 
       # Test inertia
-      n_pos, n_zero, n_neg = inertia(LDLT)
-      @test n_zero == 0
-      @test n_pos + n_neg == size(LDLT)[1]
+      if VERSION >= v"1.11"
+        n_pos, n_zero, n_neg = inertia(LDLT)
+        @test n_zero == 0
+        @test n_pos + n_neg == size(LDLT)[1]
+      end
     end
   end
 
@@ -249,9 +257,11 @@
     @test norm(r) ≤ sqrt(eps()) * norm(b)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(S)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(S)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(S)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(S)[1]
+    end
   end
 
   @testset "SQD" begin
@@ -286,9 +296,11 @@
     @test norm(r) ≤ sqrt(eps()) * norm(b)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(S)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(S)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(S)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(S)[1]
+    end
   end
 
   @testset "SQD_semi_dynamic" begin
@@ -323,9 +335,11 @@
     @test norm(r) ≤ sqrt(eps()) * norm(b)
 
     # Test inertia
-    n_pos, n_zero, n_neg = inertia(S)
-    @test n_zero == 0
-    @test n_pos + n_neg == size(S)[1]
+    if VERSION >= v"1.11"
+      n_pos, n_zero, n_neg = inertia(S)
+      @test n_zero == 0
+      @test n_pos + n_neg == size(S)[1]
+    end
   end
 
   @testset "Test booleans and allocations" begin
@@ -356,7 +370,7 @@
     @test_throws LDLFactorizations.SQDException lmul!(S, b)
     B = ones(20, 2)
     @test_throws LDLFactorizations.SQDException ldiv!(S, B)
-    @test_throws LDLFactorizations.SQDException inertia(S)
+    VERSION >= v"1.11" && @test_throws LDLFactorizations.SQDException inertia(S)
   end
 
   @testset "ldl_mul!" begin
